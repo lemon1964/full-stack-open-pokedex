@@ -1,4 +1,9 @@
 module.exports = {
+  settings: {
+    react: {
+      version: 'detect' // Автоматическое определение версии React
+    }
+  },
   env: {
     browser: true,
     es6: true,
