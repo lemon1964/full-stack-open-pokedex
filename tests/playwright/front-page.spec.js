@@ -11,4 +11,12 @@ describe('Pokedex', () => {
       )
     ).toBeVisible()
   })
+
+  test('transition from the main page to the ivysaur page and then to the Next page', async ({ page }) => {
+    await page.goto('http://localhost:8080/');
+    await page.getByRole('link', { name: 'ivysaur' }).click();
+    await expect(page.getByText('ivysaur')).toBeVisible();
+    await page.getByRole('link', { name: 'Next' }).click();
+    await expect(page.getByText('venusaur')).toBeVisible();
+  })
 })
