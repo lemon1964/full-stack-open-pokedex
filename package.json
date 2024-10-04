@@ -10,7 +10,9 @@
     "test:e2e": "npx playwright test tests/playwright",
     "test:report": "playwright show-report",
     "eslint": "eslint './**/*.{js,jsx}'",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "predeploy": "./build_step.sh",
+    "deploy": "git add . && git commit -m 'Deploy build' && git push"
   },
   "repository": {
     "type": "git",
