@@ -8,7 +8,6 @@
     "start-prod": "node app.js",
     "test": "jest",
     "test:e2e": "npx playwright test tests/playwright",
-    "test:playwright": "npx playwright test", 
     "test:report": "playwright show-report",
     "eslint": "eslint './**/*.{js,jsx}'",
     "build": "webpack --mode production"
