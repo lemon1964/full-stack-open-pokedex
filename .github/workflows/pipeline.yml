@@ -13,14 +13,67 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+          
       - name: Install dependencies
         run: npm install
 
-      - name: Check style
+      - name: Lint
         run: npm run eslint
 
       - name: Build
         run: npm run build
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
       - name: Test
         run: npm run test
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+
+# name: Lint and Test
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   simple_deployment_pipeline:
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: "20"
+#       - name: Install dependencies
+#         run: npm install
+
+#       - name: Lint
+#         run: npm run eslint
+
+#       - name: Build
+#         run: npm run build
+
+#       - name: Test
+#         run: npm run test
+
+#       - name: Install Playwright Browsers
+#         run: npx playwright install --with-deps
+#       - name: Run Playwright tests
+#         run: npm run test:e2e
+#       - uses: actions/upload-artifact@v4
+#         if: ${{ !cancelled() }}
+#         with:
+#           name: playwright-report
+#           path: playwright-report/
+#           retention-days: 30
