@@ -3,8 +3,7 @@ const app = express()
 
 app.get('/version', (req, res) => {
   res.send('1')
-});
-
+})
 
 // get the port from env variable
 const PORT = process.env.PORT || 5000
