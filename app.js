@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 
 app.get('/health', (req, res) => {
-  res.send('ok')
+  res.send('Everything is fine')
 })
 // app.get('/version', (req, res) => {
 //   res.send('1')
