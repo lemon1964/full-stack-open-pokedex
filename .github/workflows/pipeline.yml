@@ -25,12 +25,12 @@ jobs:
 
       - name: Lint
         run: npm run eslint
-        id: lint
+        id: lint-check
         if: always()
 
       - name: Build
         run: npm run build
-        id: build
+        id: build-check
         if: always()
 
       - name: Install Playwright Browsers
@@ -38,12 +38,12 @@ jobs:
 
       - name: Test
         run: npm run test
-        id: test
+        id: test-check
         if: always()
 
       - name: Run Playwright tests
         run: npm run test:e2e
-        id: test-e2e
+        id: test-e2e-check
         if: always()
 
       - uses: actions/upload-artifact@v4
