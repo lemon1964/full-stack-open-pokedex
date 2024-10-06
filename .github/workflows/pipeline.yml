@@ -48,4 +48,4 @@ jobs:
       - name: Deploy to Render
         run: |
           echo "Deploying to Render"
-          git push https://github.com/lemon1964/full-stack-open-pokedex.git main
+          git push https://github.com/lemon1964/full-stack-open-pokedex.git HEAD:main
