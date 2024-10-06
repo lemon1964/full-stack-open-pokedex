@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 
 app.get('/health', (req, res) => {
-  console.log('Changes from develop branch')
+  // console.log('Changes main 1')
   res.send('Health is fine!')
 })
 // app.get('/health', (req, res) => {
