@@ -25,18 +25,22 @@ jobs:
 
       - name: Lint
         run: npm run eslint
+        id: lint
 
       - name: Build
         run: npm run build
+        id: build
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
       - name: Test
         run: npm run test
+        id: test
 
       - name: Run Playwright tests
         run: npm run test:e2e
+        id: test-e2e
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
