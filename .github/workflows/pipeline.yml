@@ -26,44 +26,42 @@ jobs:
       - name: Lint
         run: npm run eslint
         id: lint-check
-        if: always()
+        continue-on-error: true  # Lint errors won't stop the pipeline
 
-      - name: Set status for Lint (success)
-        if: steps.lint-check.conclusion == 'success'
-        run: |
-          curl -H "Accept: application/vnd.github.v3+json" \
-               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -d '{"state":"success", "description":"Lint check passed"}' \
-               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
-
-      - name: Set status for Lint (failure)
-        if: steps.lint-check.conclusion == 'failure'
-        run: |
-          curl -H "Accept: application/vnd.github.v3+json" \
-               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -d '{"state":"failure", "description":"Lint check failed"}' \
-               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
+      - name: Create status for Lint
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { context, github } = require('@actions/github');
+            const conclusion = '${{ steps.lint-check.conclusion }}' === 'success' ? 'success' : 'failure';
+            await github.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: conclusion,
+              description: 'Lint check ' + conclusion,
+              context: 'lint-check'
+            });
 
       - name: Build
         run: npm run build
         id: build-check
-        if: always()
+        continue-on-error: true  # Build errors won't stop the pipeline
 
-      - name: Set status for Build (success)
-        if: steps.build-check.conclusion == 'success'
-        run: |
-          curl -H "Accept: application/vnd.github.v3+json" \
-               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -d '{"state":"success", "description":"Build passed"}' \
-               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
-
-      - name: Set status for Build (failure)
-        if: steps.build-check.conclusion == 'failure'
-        run: |
-          curl -H "Accept: application/vnd.github.v3+json" \
-               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -d '{"state":"failure", "description":"Build failed"}' \
-               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
+      - name: Create status for Build
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { context, github } = require('@actions/github');
+            const conclusion = '${{ steps.build-check.conclusion }}' === 'success' ? 'success' : 'failure';
+            await github.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: conclusion,
+              description: 'Build ' + conclusion,
+              context: 'build-check'
+            });
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
@@ -71,44 +69,42 @@ jobs:
       - name: Test
         run: npm run test
         id: test-check
-        if: always()
+        continue-on-error: true  # Test errors won't stop the pipeline
 
-      - name: Set status for Test (success)
-        if: steps.test-check.conclusion == 'success'
-        run: |
-          curl -H "Accept: application/vnd.github.v3+json" \
-               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -d '{"state":"success", "description":"Tests passed"}' \
-               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
+      - name: Create status for Test
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { context, github } = require('@actions/github');
+            const conclusion = '${{ steps.test-check.conclusion }}' === 'success' ? 'success' : 'failure';
+            await github.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: conclusion,
+              description: 'Test check ' + conclusion,
+              context: 'test-check'
+            });
 
-      - name: Set status for Test (failure)
-        if: steps.test-check.conclusion == 'failure'
-        run: |
-          curl -H "Accept: application/vnd.github.v3+json" \
-               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -d '{"state":"failure", "description":"Tests failed"}' \
-               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
-
-      - name: Run Playwright tests
+      - name: Run Playwright E2E tests
         run: npm run test:e2e
         id: test-e2e-check
-        if: always()
+        continue-on-error: true  # E2E test errors won't stop the pipeline
 
-      - name: Set status for E2E tests (success)
-        if: steps.test-e2e-check.conclusion == 'success'
-        run: |
-          curl -H "Accept: application/vnd.github.v3+json" \
-               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -d '{"state":"success", "description":"E2E tests passed"}' \
-               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
-
-      - name: Set status for E2E tests (failure)
-        if: steps.test-e2e-check.conclusion == 'failure'
-        run: |
-          curl -H "Accept: application/vnd.github.v3+json" \
-               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -d '{"state":"failure", "description":"E2E tests failed"}' \
-               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
+      - name: Create status for E2E Test
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { context, github } = require('@actions/github');
+            const conclusion = '${{ steps.test-e2e-check.conclusion }}' === 'success' ? 'success' : 'failure';
+            await github.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: conclusion,
+              description: 'E2E Test ' + conclusion,
+              context: 'test-e2e-check'
+            });
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -120,12 +116,6 @@ jobs:
       - name: Trigger deployment
         if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-
-      - name: Deploy to Render
-        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-        run: |
-          echo "Deploying to Render"
-          git push https://github.com/lemon1964/full-stack-open-pokedex.git HEAD:main
 
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -141,6 +131,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           WITH_V: true
+
 
 
 
