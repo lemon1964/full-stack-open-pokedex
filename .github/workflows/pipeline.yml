@@ -32,12 +32,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { context: ctx, github } = require('@actions/github');
             const conclusion = '${{ steps.lint-check.conclusion }}' === 'success' ? 'success' : 'failure';
-            await github.repos.createCommitStatus({
-              owner: ctx.repo.owner,
-              repo: ctx.repo.repo,
-              sha: ctx.sha,
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
               state: conclusion,
               description: 'Lint check ' + conclusion,
               context: 'lint-check'
@@ -52,12 +51,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { context: ctx, github } = require('@actions/github');
             const conclusion = '${{ steps.build-check.conclusion }}' === 'success' ? 'success' : 'failure';
-            await github.repos.createCommitStatus({
-              owner: ctx.repo.owner,
-              repo: ctx.repo.repo,
-              sha: ctx.sha,
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
               state: conclusion,
               description: 'Build ' + conclusion,
               context: 'build-check'
@@ -75,12 +73,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { context: ctx, github } = require('@actions/github');
             const conclusion = '${{ steps.test-check.conclusion }}' === 'success' ? 'success' : 'failure';
-            await github.repos.createCommitStatus({
-              owner: ctx.repo.owner,
-              repo: ctx.repo.repo,
-              sha: ctx.sha,
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
               state: conclusion,
               description: 'Test check ' + conclusion,
               context: 'test-check'
@@ -95,12 +92,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { context: ctx, github } = require('@actions/github');
             const conclusion = '${{ steps.test-e2e-check.conclusion }}' === 'success' ? 'success' : 'failure';
-            await github.repos.createCommitStatus({
-              owner: ctx.repo.owner,
-              repo: ctx.repo.repo,
-              sha: ctx.sha,
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
               state: conclusion,
               description: 'E2E Test ' + conclusion,
               context: 'test-e2e-check'
