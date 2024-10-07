@@ -1,2 +1,2 @@
-// Test deploy changes in develop
+// Branch protection rules
 
