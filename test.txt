@@ -1,2 +1,2 @@
-// Branch protection rules
+// Branch protection rules 2
 
