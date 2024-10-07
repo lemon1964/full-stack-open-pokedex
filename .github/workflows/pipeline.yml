@@ -29,7 +29,7 @@ jobs:
 
       - name: Build
         run: npm run build
-        id: build-check
+        # id: build-check
 
       - name: Set status to build-check
         env:
