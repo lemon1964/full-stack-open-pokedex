@@ -28,10 +28,42 @@ jobs:
         id: lint-check
         if: always()
 
+      - name: Set status for Lint (success)
+        if: steps.lint-check.conclusion == 'success'
+        run: |
+          curl -H "Accept: application/vnd.github.v3+json" \
+               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -d '{"state":"success", "description":"Lint check passed"}' \
+               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
+
+      - name: Set status for Lint (failure)
+        if: steps.lint-check.conclusion == 'failure'
+        run: |
+          curl -H "Accept: application/vnd.github.v3+json" \
+               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -d '{"state":"failure", "description":"Lint check failed"}' \
+               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
+
       - name: Build
         run: npm run build
         id: build-check
         if: always()
+
+      - name: Set status for Build (success)
+        if: steps.build-check.conclusion == 'success'
+        run: |
+          curl -H "Accept: application/vnd.github.v3+json" \
+               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -d '{"state":"success", "description":"Build passed"}' \
+               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
+
+      - name: Set status for Build (failure)
+        if: steps.build-check.conclusion == 'failure'
+        run: |
+          curl -H "Accept: application/vnd.github.v3+json" \
+               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -d '{"state":"failure", "description":"Build failed"}' \
+               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
@@ -41,10 +73,42 @@ jobs:
         id: test-check
         if: always()
 
+      - name: Set status for Test (success)
+        if: steps.test-check.conclusion == 'success'
+        run: |
+          curl -H "Accept: application/vnd.github.v3+json" \
+               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -d '{"state":"success", "description":"Tests passed"}' \
+               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
+
+      - name: Set status for Test (failure)
+        if: steps.test-check.conclusion == 'failure'
+        run: |
+          curl -H "Accept: application/vnd.github.v3+json" \
+               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -d '{"state":"failure", "description":"Tests failed"}' \
+               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
+
       - name: Run Playwright tests
         run: npm run test:e2e
         id: test-e2e-check
         if: always()
+
+      - name: Set status for E2E tests (success)
+        if: steps.test-e2e-check.conclusion == 'success'
+        run: |
+          curl -H "Accept: application/vnd.github.v3+json" \
+               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -d '{"state":"success", "description":"E2E tests passed"}' \
+               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
+
+      - name: Set status for E2E tests (failure)
+        if: steps.test-e2e-check.conclusion == 'failure'
+        run: |
+          curl -H "Accept: application/vnd.github.v3+json" \
+               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -d '{"state":"failure", "description":"E2E tests failed"}' \
+               https://api.github.com/repos/lemon1964/full-stack-open-pokedex/statuses/${{ github.sha }}
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -77,3 +141,85 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           WITH_V: true
+
+
+
+# name: Deployment pipeline
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches: [main]
+#     types: [opened, synchronize]
+
+# env:
+#   SKIP_DEPLOYMENT: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
+
+# jobs:
+#   simple_deployment_pipeline:
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: "20"
+
+#       - name: Install dependencies
+#         run: npm install
+
+#       - name: Lint
+#         run: npm run eslint
+#         id: lint-check
+#         if: always()
+
+#       - name: Build
+#         run: npm run build
+#         id: build-check
+#         if: always()
+
+#       - name: Install Playwright Browsers
+#         run: npx playwright install --with-deps
+
+#       - name: Test
+#         run: npm run test
+#         id: test-check
+#         if: always()
+
+#       - name: Run Playwright tests
+#         run: npm run test:e2e
+#         id: test-e2e-check
+#         if: always()
+
+#       - uses: actions/upload-artifact@v4
+#         if: ${{ !cancelled() }}
+#         with:
+#           name: playwright-report
+#           path: playwright-report/
+#           retention-days: 30
+
+#       - name: Trigger deployment
+#         if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+#         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+
+#       - name: Deploy to Render
+#         if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+#         run: |
+#           echo "Deploying to Render"
+#           git push https://github.com/lemon1964/full-stack-open-pokedex.git HEAD:main
+
+#   tag_release:
+#     needs: [simple_deployment_pipeline]
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+  
+#       - name: Bump version and push tag
+#         if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+#         uses: anothrNick/github-tag-action@1.71.0
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           WITH_V: true
