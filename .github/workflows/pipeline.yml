@@ -31,15 +31,15 @@ jobs:
         run: npm run build
         id: build-check
 
-      - name: Build Failure
-        uses: rjstone/discord-webhook-notify@v1
-        if: steps.build-check.outcome == 'failure'
-        with:
-          severity: error
-          details: "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build."
-          text: "You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details."
-          username: lemon196417
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      # - name: Build Failure
+      #   uses: rjstone/discord-webhook-notify@v1
+      #   if: steps.build-check.outcome == 'failure'
+      #   with:
+      #     severity: error
+      #     details: "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build."
+      #     text: "You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details."
+      #     username: lemon196417
+      #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
       # - name: Install Playwright Browsers
       #   run: npx playwright install --with-deps
@@ -87,9 +87,11 @@ jobs:
       #   with:
       #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       #     details: "New deployment completed!"
-      - name: Send Discord Notification
-        uses: rjstone/discord-webhook-notify@v1.0.4
+      - name: Test Info
+        uses: rjstone/discord-webhook-notify@v1
         with:
+          severity: info
+          details: Test succeeded.
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
         
