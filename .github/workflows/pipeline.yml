@@ -69,15 +69,21 @@ jobs:
       #     echo "Deploying to Render"
       #     git push https://github.com/lemon1964/full-stack-open-pokedex.git HEAD:main
 
-      - name: Info
-        if: ${{ success() }} && github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+      # - name: Info
+      #   if: ${{ success() }} && github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+      #   uses: rjstone/discord-webhook-notify@v1.0.4
+      #   with:
+      #     severity: info
+      #     details: "A new version of Pokedex deployed. Deployment completed successfully by ${{ github.actor }}. Visit the [deployed app](https://full-stack-open-pokedex-op08.onrender.com/)."
+      #     text: "Deployment completed at ${{ github.event.head_commit.timestamp }}"
+      #     username: lemon196417
+      #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Send Discord Notification
         uses: rjstone/discord-webhook-notify@v1.0.4
         with:
-          severity: info
-          # details: "A new version of Pokedex deployed. Deployment completed successfully by ${{ github.actor }}. Visit the [deployed app](https://full-stack-open-pokedex-op08.onrender.com/)."
-          # text: "Deployment completed at ${{ github.event.head_commit.timestamp }}"
-          # username: lemon196417
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          message: "New deployment completed!"
         
       - name: Log Webhook Result
         run: echo "Webhook message sent successfully."
