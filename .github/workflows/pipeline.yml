@@ -85,7 +85,7 @@ jobs:
       - name: Send Discord Notification
         uses: rjstone/discord-webhook-notify@v1.0.4
         with:
-          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           details: "New deployment completed!"
         
       # - name: Log Webhook Result
