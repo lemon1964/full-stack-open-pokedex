@@ -74,9 +74,9 @@ jobs:
         uses: rjstone/discord-webhook-notify@v1.0.4
         with:
           severity: info
-          details: "A new version of Pokedex deployed. Deployment completed successfully by ${{ github.actor }}. Visit the [deployed app](https://full-stack-open-pokedex-op08.onrender.com/)."
+          # details: "A new version of Pokedex deployed. Deployment completed successfully by ${{ github.actor }}. Visit the [deployed app](https://full-stack-open-pokedex-op08.onrender.com/)."
           # text: "Deployment completed at ${{ github.event.head_commit.timestamp }}"
-          username: lemon196417
+          # username: lemon196417
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
         
       - name: Log Webhook Result
