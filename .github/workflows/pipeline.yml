@@ -31,69 +31,94 @@ jobs:
         run: npm run build
         id: build-check
 
-      - name: Build Failure
-        uses: rjstone/discord-webhook-notify@v1
+      - name: Build Failure Notification
         if: steps.build-check.outcome == 'failure'
+        run: |
+          BASE_URL="${{ secrets.BASE_URL }}"
+          WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
+          FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
+          echo "Using webhook URL: $FULL_URL" # Отладка, можно удалить позже
+          CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+          curl -X POST -H "Content-Type: application/json" -d '{
+            "username": "lemon196417",
+            "content": "Build Failure Detected",
+            "embeds": [{
+              "title": "Build Failure",
+              "description": "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build. You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.",
+              "color": 15158332,  # Красный цвет (в десятичном формате)
+              "footer": {
+                "text": "Severity: Error • '"$CURRENT_TIME"'"
+              }
+            }]
+          }' "$FULL_URL"
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Test
+        run: npm run test
+        id: test-check
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+        id: test-e2e-check
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
         with:
-          severity: error
-          details: "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build."
-          text: "You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details."
-          username: lemon196417
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
 
-      # - name: Install Playwright Browsers
-      #   run: npx playwright install --with-deps
-
-      # - name: Test
-      #   run: npm run test
-      #   id: test-check
-
-      # - name: Run Playwright tests
-      #   run: npm run test:e2e
-      #   id: test-e2e-check
-
-      # - uses: actions/upload-artifact@v4
-      #   if: ${{ !cancelled() }}
-      #   with:
-      #     name: playwright-report
-      #     path: playwright-report/
-      #     retention-days: 30
-
-      # - name: Trigger deployment
-      #   if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-      #   run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-
-      # - name: Deploy to Render
-      #   if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-      #   run: |
-      #     echo "Deploying to Render"
-      #     git push https://github.com/lemon1964/full-stack-open-pokedex.git HEAD:main
-
-      - name: Info
+      - name: Trigger deployment
         if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-        uses: rjstone/discord-webhook-notify@v1.0.4
-        with:
-          severity: info
-          details: "A new version of Pokedex deployed. Deployment completed successfully by ${{ github.actor }}. Visit the [deployed app](https://full-stack-open-pokedex-op08.onrender.com/)."
-          text: "Deployment completed at ${{ github.event.head_commit.timestamp }}"
-          username: lemon196417
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+
+      - name: Deploy to Render
+        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+        run: |
+          echo "Deploying to Render"
+          git push https://github.com/lemon1964/full-stack-open-pokedex.git HEAD:main
+
+      - name: Send Discord Notification on Successful Deployment
+        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+        run: |
+          BASE_URL="${{ secrets.BASE_URL }}"
+          WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
+          FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
+          echo "Using webhook URL: $FULL_URL" # Отладка, можно удалить позже
+          CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+          curl -X POST -H "Content-Type: application/json" -d '{
+            "username": "lemon196417",
+            "content": "A new version of Pokedex deployed!",
+            "embeds": [{
+              "title": "Deployment Details",
+              "description": "Deployed to [full-stack-open-pokedex-render](https://full-stack-open-pokedex-op08.onrender.com/) by lemon1964",
+              "color": 3066993,  # Зелёный цвет (в десятичном формате)
+              "footer": {
+                "text": "Severity: Informational • '"$CURRENT_TIME"'"
+              }
+            }]
+          }' "$FULL_URL"
         
       - name: Log Webhook Result
         run: echo "Webhook message sent successfully."
         
 
-  # tag_release:
-  #   needs: [simple_deployment_pipeline]
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  tag_release:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
   
-  #     - name: Bump version and push tag
-  #       if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-  #       uses: anothrNick/github-tag-action@1.71.0
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         WITH_V: true
+      - name: Bump version and push tag
+        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+        uses: anothrNick/github-tag-action@1.71.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          WITH_V: true
+
+
+  
