@@ -82,11 +82,17 @@ jobs:
       # - name: Log Webhook Result
       #   run: echo "Webhook message sent successfully."
 
+      # - name: Send Discord Notification
+      #   uses: rjstone/discord-webhook-notify@v1.0.4
+      #   with:
+      #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      #     details: "New deployment completed!"
       - name: Send Discord Notification
         uses: rjstone/discord-webhook-notify@v1.0.4
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           details: "New deployment completed!"
+
         
       # - name: Log Webhook Result
       #   run: echo "Webhook message sent successfully."
@@ -106,3 +112,6 @@ jobs:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #       with:
   #         WITH_V: true
+
+
+  
