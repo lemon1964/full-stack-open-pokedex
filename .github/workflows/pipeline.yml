@@ -31,6 +31,18 @@ jobs:
         run: npm run build
         id: build-check
 
+      - name: Build Failure
+        uses: rjstone/discord-webhook-notify@v1
+        if: steps.build-check.outcome == 'failure'
+        with:
+          severity: error
+          title: "Build failed"
+          details: "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build."
+          text: "You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details."
+          username: lemon196417
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
@@ -59,16 +71,20 @@ jobs:
           echo "Deploying to Render"
           git push https://github.com/lemon1964/full-stack-open-pokedex.git HEAD:main
 
-      # - name: Set status to deployment
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     curl -X POST \
-      #     -H "Accept: application/vnd.github.v3+json" \
-      #     -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-      #     https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-      #     -d '{"state":"success", "context":"deployment", "description":"Deployment successful"}'
-  
+      - name: Info
+        if: ${{ success() }}
+        uses: rjstone/discord-webhook-notify@v1.0.4
+        with:
+          severity: info
+          title: "A new version of Pokedex deployed"
+          details: "Deployment completed at ${{ steps.build-check.outputs.time }} by ${{ github.actor }}. Visit the [deployed app](https://full-stack-open-pokedex-op08.onrender.com/)."
+          text: "Informational DateTime"
+          username: lemon196417
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Log Webhook Result
+        run: echo "Webhook message sent successfully."
+        
 
   tag_release:
     needs: [simple_deployment_pipeline]
