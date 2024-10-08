@@ -87,11 +87,9 @@ jobs:
       #   with:
       #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       #     details: "New deployment completed!"
-      - name: Send Discord Notification
-        uses: rjstone/discord-webhook-notify@v1.0.4
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          details: "New deployment completed!"
+      - name: Test Discord Webhook
+        run: |
+          curl -X POST -H "Content-Type: application/json" -d '{"content": "Test message from GitHub Actions"}' ${{ secrets.DISCORD_WEBHOOK }}
 
         
       # - name: Log Webhook Result
