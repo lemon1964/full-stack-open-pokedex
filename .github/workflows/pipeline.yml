@@ -80,41 +80,41 @@ jobs:
           echo "Deploying to Render"
           git push https://github.com/lemon1964/full-stack-open-pokedex.git HEAD:main
 
-      - name: Send Discord Notification
-        run: |
-          BASE_URL="${{ secrets.BASE_URL }}"
-          WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
-          FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
-          echo "Using webhook URL: $FULL_URL" # Можно временно оставить для отладки
-          curl -X POST -H "Content-Type: application/json" -d '{
-            "username": "GitHub PR Notifier",
-            "content": "A new version of Pokedex deployed!",
-            "embeds": [{
-              "title": "Deployment Details",
-              "description": "Deployed to [full-stack-open-pokedex-xobi](https://full-stack-open-pokedex-xobi.onrender.com/) by lottaLappalainen",
-              "color": 5814783
-            }]
-          }' "$FULL_URL"
-      # - name: Send Discord Notification on Successful Deployment
-      #   if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+      # - name: Send Discord Notification
       #   run: |
       #     BASE_URL="${{ secrets.BASE_URL }}"
       #     WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
       #     FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
-      #     echo "Using webhook URL: $FULL_URL" # Отладка, можно удалить позже
-      #     CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+      #     echo "Using webhook URL: $FULL_URL" # Можно временно оставить для отладки
       #     curl -X POST -H "Content-Type: application/json" -d '{
-      #       "username": "lemon196417",
+      #       "username": "GitHub PR Notifier",
       #       "content": "A new version of Pokedex deployed!",
       #       "embeds": [{
       #         "title": "Deployment Details",
-      #         "description": "Deployed to [full-stack-open-pokedex-render](https://full-stack-open-pokedex-op08.onrender.com/) by lemon1964",
-      #         "color": 3066993,  # Зелёный цвет (в десятичном формате)
-      #         "footer": {
-      #           "text": "Severity: Informational • '"$CURRENT_TIME"'"
-      #         }
+      #         "description": "Deployed to [full-stack-open-pokedex-xobi](https://full-stack-open-pokedex-xobi.onrender.com/) by lottaLappalainen",
+      #         "color": 5814783
       #       }]
       #     }' "$FULL_URL"
+      - name: Send Discord Notification on Successful Deployment
+        # if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+        run: |
+          BASE_URL="${{ secrets.BASE_URL }}"
+          WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
+          FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
+          echo "Using webhook URL: $FULL_URL" # Отладка, можно удалить позже
+          CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+          curl -X POST -H "Content-Type: application/json" -d '{
+            "username": "lemon196417",
+            "content": "A new version of Pokedex deployed!",
+            "embeds": [{
+              "title": "Deployment Details",
+              "description": "Deployed to [full-stack-open-pokedex-render](https://full-stack-open-pokedex-op08.onrender.com/) by lemon1964",
+              "color": 3066993,  # Зелёный цвет (в десятичном формате)
+              "footer": {
+                "text": "Severity: Informational • '"$CURRENT_TIME"'"
+              }
+            }]
+          }' "$FULL_URL"
         
       - name: Log Webhook Result
         run: echo "Webhook message sent successfully."
