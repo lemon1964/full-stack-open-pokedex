@@ -36,8 +36,7 @@ jobs:
         if: steps.build-check.outcome == 'failure'
         with:
           severity: error
-          title: "Build failed"
-          details: "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build."
+          details: "Build failed. Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build."
           text: "You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details."
           username: lemon196417
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
@@ -76,8 +75,7 @@ jobs:
         uses: rjstone/discord-webhook-notify@v1.0.4
         with:
           severity: info
-          title: "A new version of Pokedex deployed"
-          details: "Deployment completed at ${{ steps.build-check.outputs.time }} by ${{ github.actor }}. Visit the [deployed app](https://full-stack-open-pokedex-op08.onrender.com/)."
+          details: "A new version of Pokedex deployed. Deployment completed at ${{ steps.build-check.outputs.time }} by ${{ github.actor }}. Visit the [deployed app](https://full-stack-open-pokedex-op08.onrender.com/)."
           text: "Informational DateTime"
           username: lemon196417
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
