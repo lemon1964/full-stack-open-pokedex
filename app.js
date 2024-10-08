@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 import NonExistentComponent from './NonExistentComponent';
-
+const test = ;
 
 app.get('/health', (req, res) => {
   // console.log('Changes main 1')
