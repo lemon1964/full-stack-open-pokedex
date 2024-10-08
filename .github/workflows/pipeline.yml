@@ -79,6 +79,9 @@ jobs:
       #     username: lemon196417
       #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
+      # - name: Log Webhook Result
+      #   run: echo "Webhook message sent successfully."
+
       - name: Send Discord Notification
         uses: rjstone/discord-webhook-notify@v1.0.4
         with:
