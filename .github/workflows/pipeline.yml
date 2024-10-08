@@ -30,6 +30,7 @@ jobs:
       - name: Build
         run: npm run build
         id: build-check
+        continue-on-error: true
 
       - name: Build Failure Notification
         if: steps.build-check.outcome == 'failure'
