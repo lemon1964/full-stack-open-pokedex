@@ -30,6 +30,7 @@ jobs:
       - name: Build
         run: npm run build
         id: build-check
+        continue-on-error: true
 
       - name: Build Failure Notification
         if: steps.build-check.outcome == 'failure'
@@ -45,7 +46,7 @@ jobs:
             "embeds": [{
               "title": "Build Failure",
               "description": "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build. You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.",
-              "color": 15158332,  # Красный цвет (в десятичном формате)
+              "color": 15158332,
               "footer": {
                 "text": "Severity: Error • '"$CURRENT_TIME"'"
               }
@@ -120,5 +121,3 @@ jobs:
         with:
           WITH_V: true
 
-
-  
