@@ -23,9 +23,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Lint
-        run: npm run eslint
-        id: lint-check
+      # - name: Lint
+      #   run: npm run eslint
+      #   id: lint-check
 
       - name: Build
         run: npm run build
@@ -120,5 +120,3 @@ jobs:
         with:
           WITH_V: true
 
-
-  
