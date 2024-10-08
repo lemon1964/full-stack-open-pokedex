@@ -86,10 +86,10 @@ jobs:
         uses: rjstone/discord-webhook-notify@v1.0.4
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-          message: "New deployment completed!"
+          details: "New deployment completed!"
         
-      - name: Log Webhook Result
-        run: echo "Webhook message sent successfully."
+      # - name: Log Webhook Result
+      #   run: echo "Webhook message sent successfully."
         
 
   # tag_release:
