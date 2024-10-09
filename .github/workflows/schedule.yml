@@ -2,7 +2,8 @@ name: Schedule
 
 on:
   schedule:
-    - cron: '30 14-23 * * *'
+    - cron: '01 14-23 * * *'
+  workflow_dispatch:
 
 jobs:
   test_schedule:
@@ -18,4 +19,3 @@ jobs:
           timeout: 5s
           expected-status-codes: 200
 
-          
