@@ -38,7 +38,6 @@ jobs:
           BASE_URL="${{ secrets.BASE_URL }}"
           WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
           FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
-          # echo "Using webhook URL: $FULL_URL" # Отладка, можно удалить позже
           CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
           curl -X POST -H "Content-Type: application/json" -d '{
             "username": "lemon196417",
@@ -87,7 +86,6 @@ jobs:
           BASE_URL="${{ secrets.BASE_URL }}"
           WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
           FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
-          # echo "Using webhook URL: $FULL_URL"
           CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
           curl -X POST -H "Content-Type: application/json" -d '{
             "username": "lemon196417",
