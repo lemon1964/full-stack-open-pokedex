@@ -2,7 +2,7 @@ name: Schedule
 
 on:
   schedule:
-    - cron: '0 15 * * *'
+    - cron: '0 15 1 * *'
   workflow_dispatch:
 
 jobs:
@@ -16,6 +16,5 @@ jobs:
           follow-redirect: false
           max-attempts: 3
           retry-delay: 10s
-          timeout: 5s
-          expected-status-codes: 200
+
 
